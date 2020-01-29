@@ -148,6 +148,8 @@ export default class StepWizard extends PureComponent {
   /** Previous Step */
   previousStep = () => this.setActiveStep(this.state.activeStep - 1);
 
+  //previousStep = this.props.store.dispatch(this.props.stepSlice.actions.decrement());
+
   /** Go to step index */
   goToStep = step => this.setActiveStep(step - 1);
 
@@ -161,6 +163,7 @@ export default class StepWizard extends PureComponent {
 
   /** Render */
   render() {
+    console.log('props', this.props)
     const props = {
       currentStep: this.state.activeStep + 1,
       totalSteps: this.props.children.length,
@@ -193,8 +196,6 @@ export default class StepWizard extends PureComponent {
               </Step>
                 <button class="button is-light" onClick={props.previousStep}>Previous Step</button>
                 <button class="button is-light" onClick={props.nextStep}>Next Step</button>
-                <button class="button is-light" onClick={props.firstStep}>First Step</button>
-                <button class="button is-light" onClick={props.lastStep}>Last Step</button>
             </>
           );
         }
