@@ -7,6 +7,12 @@ import Step3 from "./components/Step3";
 import { store, stepSlice } from "./slices/stepSlice";
 
 function App() {
+
+  const AppContext = React.createContext();
+  const redux = {
+    store,
+    stepSlice
+  }
   const [form, setForm] = useState({});
 
   const updateForm = (key, value) => {
@@ -15,17 +21,22 @@ function App() {
     setForm({ ...form, [key]: value });
   };
 
+  const nextStep = () => {
+
+    return store.dispatch(stepSlice.actions.increment());
+  }
+
   return (
-    <>
-    <StepWizard isHashEnabled isLazyMount store={store} stepSlice={stepSlice}>
+    <AppContext.Provider value={redux}>
+    <StepWizard isLazyMount store={store} stepSlice={stepSlice}>
       <Step1 />
       <Step2 />
       <Step3 />
     </StepWizard>
     <h2>App component buttons</h2>
-    <button class="button is-dark" onClick={() => store.dispatch(stepSlice.actions.decrement())}>Previous Step</button>
-    <button class="button is-dark" onClick={() => store.dispatch(stepSlice.actions.increment())}>Next Step</button>
-    </>
+    <button className="button is-dark" onClick={() => store.dispatch(stepSlice.actions.decrement())}>Previous Step</button>
+    <button className="button is-dark" onClick={() => store.dispatch(stepSlice.actions.increment())}>Next Step</button>
+    </AppContext.Provider>
   );
 }
 

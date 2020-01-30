@@ -3,6 +3,36 @@ import PropTypes from "prop-types";
 
 import Animate from "../animate.custom.css";
 import styles from "../styles.css";
+import { store, stepSlice } from "../slices/stepSlice";
+
+// const StepWizard = () => {
+     //const activeStep = store.getState();
+    //  const goToNextStep = () => {
+    //   const activeStep = store.getState();
+    //   if (this.isInvalidStep(activeStep)) {
+    //     console.error(`${activeStep + 1} is an invalid step`);
+    //     return;
+    //   }
+    //   return store.dispatch(stepSlice.actions.increment());
+    // }
+  
+    // const goToPreviousStep = () => {
+    //   const activeStep = store.getState();
+    //   if (this.isInvalidStep(activeStep)) {
+    //     console.error(`${activeStep + 1} is an invalid step`);
+    //     return;
+    //   }
+    //   return store.dispatch(stepSlice.actions.decrement());
+    // }
+    // const previousStep = () => this.goToPreviousStep();
+    // const nextStep = () => this.goToNextStep();
+
+//   return (
+
+//   )
+// }
+
+// export default StepWizard;
 
 export default class StepWizard extends PureComponent {
   constructor(props) {
@@ -18,7 +48,7 @@ export default class StepWizard extends PureComponent {
     }
 
     // Provide instance to parent
-    this.props.instance(this);
+    //this.props.instance(this);
   }
 
   componentWillUnmount() {
@@ -31,7 +61,7 @@ export default class StepWizard extends PureComponent {
   /** Setup Steps */
   initialState = () => {
     const state = {
-      activeStep: 0,
+      activeStep: store.getState(),
       classes: {},
       hashKeys: {}
     };
@@ -90,8 +120,27 @@ export default class StepWizard extends PureComponent {
 
   isInvalidStep = next => next < 0 || next >= this.props.children.length;
 
+  goToNextStep = () => {
+    const activeStep = store.getState();
+    if (this.isInvalidStep(activeStep)) {
+      console.error(`${activeStep + 1} is an invalid step`);
+      return;
+    }
+    return store.dispatch(stepSlice.actions.increment());
+  }
+
+  goToPreviousStep = () => {
+    const activeStep = store.getState();
+    if (this.isInvalidStep(activeStep)) {
+      console.error(`${activeStep + 1} is an invalid step`);
+      return;
+    }
+    return store.dispatch(stepSlice.actions.decrement());
+  }
+
   setActiveStep = next => {
     const active = this.state.activeStep;
+    //const active = store.getState();
     if (active === next) return;
     if (this.isInvalidStep(next)) {
       console.error(`${next + 1} is an invalid step`);
@@ -143,12 +192,13 @@ export default class StepWizard extends PureComponent {
   lastStep = () => this.goToStep(this.props.children.length);
 
   /** Next Step */
-  nextStep = () => this.setActiveStep(this.state.activeStep + 1);
+  //nextStep = () => this.setActiveStep(this.state.activeStep + 1);
+  nextStep = () => this.goToNextStep();
 
   /** Previous Step */
-  previousStep = () => this.setActiveStep(this.state.activeStep - 1);
+  //previousStep = () => this.setActiveStep(this.state.activeStep - 1);
 
-  //previousStep = this.props.store.dispatch(this.props.stepSlice.actions.decrement());
+  previousStep = () => this.goToPreviousStep();
 
   /** Go to step index */
   goToStep = step => this.setActiveStep(step - 1);
@@ -163,9 +213,10 @@ export default class StepWizard extends PureComponent {
 
   /** Render */
   render() {
-    console.log('props', this.props)
+    console.log('store state', store.getState())
     const props = {
-      currentStep: this.state.activeStep + 1,
+      //currentStep: this.state.activeStep + 1,
+      currentStep: store.getState() + 1,
       totalSteps: this.props.children.length,
       /** Functions */
       nextStep: this.nextStep,
@@ -179,7 +230,8 @@ export default class StepWizard extends PureComponent {
     const childrenWithProps = React.Children.map(
       this.props.children,
       (child, i) => {
-        props.isActive = i === this.state.activeStep;
+        //props.isActive = i === this.state.activeStep;
+        props.isActive = i === store.getState();
         props.transitions = classes[i];
 
         // Not Lazy Mount || isLazyMount && isActive
@@ -194,8 +246,9 @@ export default class StepWizard extends PureComponent {
                   ? React.cloneElement(child, props)
                   : child}
               </Step>
-                <button class="button is-light" onClick={props.previousStep}>Previous Step</button>
-                <button class="button is-light" onClick={props.nextStep}>Next Step</button>
+                <h2>StepWizard component buttons</h2>
+                <button className="button is-light" onClick={props.previousStep}>Previous Step</button>
+                <button className="button is-light" onClick={props.nextStep}>Next Step</button>
             </>
           );
         }

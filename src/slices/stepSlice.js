@@ -6,6 +6,7 @@ export const stepSlice = createSlice({
   reducers: {
     increment: state => state + 1,
     decrement: state => state === 0 ? state = 0 : state - 1,
+    getActiveStep: state => state,
     //firstStep: state => state = 1,
     //lastStep: state => state = children.length,
   }
